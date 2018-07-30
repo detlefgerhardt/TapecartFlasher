@@ -1,6 +1,6 @@
 TapecartFlasher for Windows 
 
-This project can be build with Visual Studion 2015 for DOTNET 4.5 (or higher).
+This project can be build with Visual Studion 2015 for .NET 4.5 (or higher).
 
 You have to set a reference to the Arduino FlashUpdater by Christophe Diericx 
 (https://github.com/christophediericx).
