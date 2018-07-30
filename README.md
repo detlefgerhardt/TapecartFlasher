@@ -33,28 +33,27 @@ Pin D5  ! SENSE
 2. Connect the Arduino via USB to the PC
 
 3. Please check if the Arduino is properly recognized by Windows
-and appears as a COM port in Device Manager.
-You may still need to match the Arduino USB driver
-be installed.
+and appears as a COM port in Device Manager. You may still need to 
+ensure that the correct Arduino USB driver is installed.
 
-4. Start TapecartFlasher
+4. Start Windows TapecartFlasher tool.
 
 5. Click "Detect". If the Arduino already has a TapecartFlasher
 Software, the COM port should by found and displayed.
 
-6. If the Arduino does not yet contain TapecartFlasher software,
-select the correct COM port, click on "Upload / Update Sketch",
-choose the correct Arduino board and click Update.
-The software will now be transferred to the Arduino.
-Close the update window and click "Detect" again.
-The correct COM port should now be displayed.
+6. If the Arduino does not yet contain the TapecartFlasher software,
+select the correct COM port, click on "Upload / Update Sketch", choose
+the correct Arduino board and click Update. The software will now be
+transferred to the Arduino. Close the update window and click "Detect" 
+again and the correct COM port should be displayed.
 
 7. Click "Connect". After a few seconds, some information about the connected
 Tapecart module will be displayed.
 
-8. With the "Write" or "Read" button a TCRT file can by written or read.
+8. With the "Write" or "Read" button a TCRT file can be transfered to or from the
+Tapecart module.
 
-In case of problems please contact  feedback@dgerhardt.de or user detlef at 
+In case of problems please contact feedback@dgerhardt.de or user detlef at 
 forum64.de.
 
 Have fun.
