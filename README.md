@@ -1,6 +1,6 @@
-# TapecartFlasher #
+## TapecartFlasher
 
-[Screenshot](http://www.dgerhardt.de/TapecartFlasherScreen.png)
+![Screenshot](http://www.dgerhardt.de/TapecartFlasherScreen.png)
 
 TapecartFlasher is a Windows tool to write and read out 
 C64 Tapecart modules directly from the PC via an Arduino
@@ -16,7 +16,7 @@ The Arduino development environment is not needed for this.
 The hex files for your Arduino board must exist in same directory
 as the TapecartFlasher.exe file.
 
-# Procedure for writing or reading a TCRT file: #
+## Procedure for writing or reading a TCRT file: #
 
 1. Connect the Tapecart module to the Arduino via an adapter.
 
@@ -60,7 +60,7 @@ forum64.de.
 
 Have fun.
 
-# Credits #
+## Credits
 
 This software uses the [ArduinoSketchUploader Library](https://github.com/christophediericx/ArduinoSketchUploader) by Christophe Diericx.
 
