@@ -1,0 +1,14 @@
+﻿Tapecart Flasher version history
+
+Version  Date        Comment
+0.0.1.0  20-07-2018  First release
+                     Writing and reading of TCRT files to and from Tapecart modules
+                     Added optional crc32 check after write
+
+0.0.1.1  27-07-2018  FIX: Reading produced corrupt TCRT files
+                     FIX: update loader only if different
+                     NEW: Added icon
+                     NEW: Added Tapecart Browser info
+                     NEW: Added crc32 check after read
+                     NEW: Added Dotnet version check (DOTNET 4.5)
+                     NEW: Improved logging
