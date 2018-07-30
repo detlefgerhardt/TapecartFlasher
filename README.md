@@ -1,5 +1,5 @@
 # TapecartFlasher
-TapecartFlasher is a Windows tool to program or read out 
+TapecartFlasher is a Windows tool to write and read out 
 C64 Tapecart modules directly from the PC via an Arduino
 UNO or NANO.
 
