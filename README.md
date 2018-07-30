@@ -18,9 +18,7 @@ as the TapecartFlasher.exe file.
 
 1. Connect the Tapecart module to the Arduino via an adapter.
 
-Wiring:
-
-* Arduino <-> Tapecart
+* Wiring (Arduino <-> Tapecart):
 * GND <-> GND
 * 5V <-> + 5V
 * Pin D2 <-> MOTOR
