@@ -60,6 +60,5 @@ Have fun.
 
 # Credits #
 
-This software uses the ArduinoSketchUploader Library by Christophe Diericx.
+This software uses the [ArduinoSketchUploader Library](https://github.com/christophediericx) by Christophe Diericx.
 
-https://github.com/christophediericx
