@@ -4,7 +4,7 @@ TapecartFlasher is a Windows tool to write and read out
 C64 Tapecart modules directly from the PC via an Arduino
 UNO or NANO.
 
-C64 Tapecart module: https://github.com/ikorb/tapecart
+[a tape port storage pod for the C64](https://github.com/ikorb/tapecart)
 
 At the first use of the Arduino, the Arduino software can
 be uploaded from TapecartFlasher to the Ardunio.
