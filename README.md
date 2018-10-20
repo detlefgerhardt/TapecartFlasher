@@ -62,10 +62,9 @@ Have fun.
 
 ## Credits
 
-The [Tapecart project (hardware and firmware)](https://github.com/ikorb/tapecart)
+The [Tapecart project (hardware and firmware)](https://github.com/ikorb/tapecart) by Ingo Korb-
 
 This software uses the [ArduinoSketchUploader Library](https://github.com/christophediericx/ArduinoSketchUploader) by Christophe Diericx.
 
 Kim Jørgensen created a [Frontend for Linux](https://github.com/KimJorgensen/tapecart_flasher).
-
 
