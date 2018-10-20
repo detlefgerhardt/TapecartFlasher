@@ -65,5 +65,5 @@ Have fun.
 This software uses the [ArduinoSketchUploader Library](https://github.com/christophediericx/ArduinoSketchUploader) by Christophe Diericx.
 
 Kim Jørgensen created a [Frontend for Linux](https://github.com/KimJorgensen/tapecart_flasher).
-https://github.com/KimJorgensen/tapecart_flasher
+
 
