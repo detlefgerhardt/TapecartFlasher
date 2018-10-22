@@ -62,7 +62,7 @@ Have fun.
 
 ## Credits
 
-The [Tapecart project (hardware and firmware)](https://github.com/ikorb/tapecart) by Ingo Korb-
+The [Tapecart project (hardware and firmware)](https://github.com/ikorb/tapecart) by Ingo Korb.
 
 This software uses the [ArduinoSketchUploader Library](https://github.com/christophediericx/ArduinoSketchUploader) by Christophe Diericx.
 
