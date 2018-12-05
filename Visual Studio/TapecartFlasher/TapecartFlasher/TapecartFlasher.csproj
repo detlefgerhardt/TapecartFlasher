@@ -103,15 +103,6 @@
     <EmbeddedResource Include="UpdateView.resx">
       <DependentUpon>UpdateView.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Data\TapecartFlasher_MEGA2560_0_1_1.hex">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\TapecartFlasher_NANO_0_1_1.hex">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\TapecartFlasher_UNO_0_1_1.hex">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -135,6 +126,7 @@
     <Content Include="Tapecart_128.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Data\" />
     <Folder Include="Libs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

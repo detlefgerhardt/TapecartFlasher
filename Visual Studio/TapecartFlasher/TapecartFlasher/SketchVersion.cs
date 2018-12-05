@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ArduinoUploader.Hardware;
 
 namespace TapecartFlasher
 {
@@ -15,7 +11,7 @@ namespace TapecartFlasher
 			ARDUINO_UNO = 0x01,
 			ARDUINO_NANO = 0x02,
 			ARDUINO_MEGA2560 = 0x03,
-			//ARDUINO_PRO_MINI = 0x04
+			ARDUINO_PROMICRO = 0x04
 		}
 
 		public int Major { get; set; }
@@ -57,12 +53,16 @@ namespace TapecartFlasher
 
 		public int SortCompareTo(SketchVersion version)
 		{
-			if (Type == version.Type)
-				return 0;
-			if ((int)Type > (int)version.Type)
-				return 1;
-			else
-				return 0;
+			// 1. board type
+			if (Type != version.Type)
+				return ((int)Type).CompareTo((int)version.Type);
+
+			// 2. major version
+			if (Major != version.Major)
+				return Major.CompareTo(version.Major);
+
+			// 3. minor version
+			return Minor.CompareTo(version.Minor);
 		}
 
 		public string VerStr
@@ -73,11 +73,11 @@ namespace TapecartFlasher
 			}
 		}
 
-		public string TypeStr
+		public string DisplayName
 		{
 			get
 			{
-				return ArduinoTypeToName(Type);
+				return ArduinoTypeToDisplayName(Type) + " - V" + VerStr;
 			}
 		}
 
@@ -96,8 +96,8 @@ namespace TapecartFlasher
 					return "NANO R3";
 				case ArduinoType.ARDUINO_MEGA2560:
 					return "MEGA2560";
-					//case ArduinoType.ARDUINO_PRO_MINI:
-					//	return "PROMICRO";
+				case ArduinoType.ARDUINO_PROMICRO:
+					return "PROMICRO";
 			}
 			return "unknown";
 		}
@@ -112,10 +112,43 @@ namespace TapecartFlasher
 					return ArduinoType.ARDUINO_NANO;
 				case "MEGA2560":
 					return ArduinoType.ARDUINO_MEGA2560;
-					//case "PROMINI":
-					//	return ArduinoType.ARDUINO_PRO_MINI;
+				case "PROMICRO":
+					return ArduinoType.ARDUINO_PROMICRO;
 			}
 			return ArduinoType.None;
+		}
+
+		public static string ArduinoTypeToDisplayName(ArduinoType arduinoType)
+		{
+			switch (arduinoType)
+			{
+				case ArduinoType.ARDUINO_UNO:
+					return "UNO R3";
+				case ArduinoType.ARDUINO_NANO:
+					return "NANO R3";
+				case ArduinoType.ARDUINO_MEGA2560:
+					return "Mega2560";
+				case ArduinoType.ARDUINO_PROMICRO:
+					return "ProMicro";
+			}
+			return "unknown";
+		}
+
+
+		public static ArduinoModel? ArduinoTypeToModel(SketchVersion.ArduinoType arduinoType)
+		{
+			switch (arduinoType)
+			{
+				case SketchVersion.ArduinoType.ARDUINO_UNO:
+					return ArduinoModel.UnoR3;
+				case SketchVersion.ArduinoType.ARDUINO_NANO:
+					return ArduinoModel.NanoR3;
+				case SketchVersion.ArduinoType.ARDUINO_MEGA2560:
+					return ArduinoModel.Mega2560;
+				case SketchVersion.ArduinoType.ARDUINO_PROMICRO:
+					return ArduinoModel.Micro;
+			}
+			return null;
 		}
 
 	}

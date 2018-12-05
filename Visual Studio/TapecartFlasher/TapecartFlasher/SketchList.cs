@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TapecartFlasher
 {
@@ -35,6 +32,7 @@ namespace TapecartFlasher
 		public void ReadSketchList()
 		{
 			string exePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			//string exePath = Application.StartupPath;
 
 			SketchVersions = new List<SketchVersion>();
 

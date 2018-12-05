@@ -52,6 +52,7 @@
 			this.ChecksumCb = new System.Windows.Forms.CheckBox();
 			this.BrowserInfoLbl = new System.Windows.Forms.Label();
 			this.BrowserInfoTb = new System.Windows.Forms.TextBox();
+			this.ConnectStateLbl = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// CloseBtn
@@ -283,11 +284,21 @@
 			this.BrowserInfoTb.Size = new System.Drawing.Size(324, 20);
 			this.BrowserInfoTb.TabIndex = 26;
 			// 
+			// ConnectStateLbl
+			// 
+			this.ConnectStateLbl.AutoSize = true;
+			this.ConnectStateLbl.Location = new System.Drawing.Point(304, 14);
+			this.ConnectStateLbl.Name = "ConnectStateLbl";
+			this.ConnectStateLbl.Size = new System.Drawing.Size(59, 13);
+			this.ConnectStateLbl.TabIndex = 28;
+			this.ConnectStateLbl.Text = "Connected";
+			// 
 			// MainView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(585, 285);
+			this.Controls.Add(this.ConnectStateLbl);
 			this.Controls.Add(this.BrowserInfoLbl);
 			this.Controls.Add(this.BrowserInfoTb);
 			this.Controls.Add(this.ChecksumCb);
@@ -347,5 +358,6 @@
 		private System.Windows.Forms.CheckBox ChecksumCb;
 		private System.Windows.Forms.Label BrowserInfoLbl;
 		private System.Windows.Forms.TextBox BrowserInfoTb;
+		private System.Windows.Forms.Label ConnectStateLbl;
 	}
 }

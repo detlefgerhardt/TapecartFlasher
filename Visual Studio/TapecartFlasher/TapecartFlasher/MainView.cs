@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ArduinoUploader.Hardware;
-using ArduinoUploader;
 using DgCommon;
 
 namespace TapecartFlasher
@@ -23,7 +17,7 @@ namespace TapecartFlasher
 		private Logging _logging = Logging.Instance;
 
 		/// <summary>
-		/// Include bootlaoder into TCRT file, when reading it from the Tapecart modul
+		/// Include bootloader into TCRT file, when reading it from the Tapecart modul
 		/// </summary>
  #warning TODO implement checkbox for this option
 		private const bool INCL_LOADER_IN_TCRT = false;
@@ -107,10 +101,25 @@ namespace TapecartFlasher
 
 		private void SetButtonStatus()
 		{
+			if (_arduinoComm.Connected)
+			{
+				ConnectStateLbl.Text = "Connected";
+				ConnectStateLbl.ForeColor = Color.Green;
+				ConnectBtn.Text = "Disconnect";
+			}
+			else
+			{
+				ConnectStateLbl.Text = "Disconnected";
+				ConnectStateLbl.ForeColor = Color.Black;
+				ConnectBtn.Text = "Connect";
+			}
+
+			DetectBtn.Enabled = !_arduinoComm.Connected;
+
 			ConnectBtn.Enabled = ComPortCb.SelectedItem != null;
 			ConnectBtn.Refresh();
 
-			UpdateSketchBtn.Enabled = ComPortCb.SelectedItem != null && !_writeActive && !_readActive;
+			UpdateSketchBtn.Enabled = ComPortCb.SelectedItem != null /*&& _arduinoComm.Connected*/ && !_writeActive && !_readActive;
 			UpdateSketchBtn.Refresh();
 
 			WriteTcrtBtn.Enabled = _arduinoComm.Connected && !_readActive;
@@ -131,12 +140,13 @@ namespace TapecartFlasher
 			InitComportSelection();
 
 			ComPortCb.SelectedItem = null;
-#warning TODO prüfen, warum die Erkennung immer erst beim zweiten Durchlauf funktioniert
+#warning TODO check why detection always works only on the second pass
 			// repeat 2 times
 			for (int i = 0; i < 2; i++)
 			{
 				foreach (ComPortSelectionItem port in _comPorts)
 				{
+					Debug.WriteLine(port);
 					if (_arduinoComm.CheckPort(port))
 					{
 						ComPortCb.SelectedItem = port;
@@ -172,28 +182,35 @@ namespace TapecartFlasher
 
 			FlasherVersionTb.Text = "";
 			TapecartVersionTb.Text = "";
+
+			if (_arduinoComm.Connected)
+			{
+				_arduinoComm.DeInit();
+				ConnectBtn.Text = "Connect";
+				ConnectBtn.ForeColor = Color.Black;
+				SetButtonStatus();
+				DetectBtn.Enabled = true;
+				ConnectBtn.Enabled = true;
+				return;
+			}
+
 			DetectBtn.Enabled = false;
 			ConnectBtn.Enabled = false;
+
 			string btnText = ConnectBtn.Text;
 			ConnectBtn.Text = "Connecting...";
+			ConnectStateLbl.Text = "";
 			ConnectBtn.Refresh();
-			bool connected = false;
 
+			bool success = false;
 			await Task.Run(() => {
-				connected = Connect();
+				success = Connect();
 			});
 
-			DetectBtn.Enabled = true;
-			ConnectBtn.Enabled = true;
-			if (connected) {
-				ConnectBtn.Text = "Connected";
-				ConnectBtn.ForeColor = Color.Green;
+			if (success)
 				_logging.Info(MODUL_NAME, "ConnectBtn_Click", $"Connected");
-			}
-			else {
-				ConnectBtn.Text = btnText;
-				ConnectBtn.ForeColor = Color.Black;
-			}
+			else
+				_arduinoComm.DeInit();
 
 			SetButtonStatus();
 
@@ -219,6 +236,8 @@ namespace TapecartFlasher
 			int apiVersion = 0;
 			SketchVersion.ArduinoType arduinoType;
 			_currentSketchVersion = null;
+
+			Debug.WriteLine("GetArduinoSketchVersion");
 			if (!_arduinoComm.GetArduinoSketchVersion(out majorVersion, out minorVersion, out apiVersion, out arduinoType))
 			{
 				_logging.Error(MODUL_NAME, "ConnectBtn_Click", $"error reading Arduino sketch version");
@@ -228,6 +247,7 @@ namespace TapecartFlasher
 				});
 				return false;
 			}
+
 			_currentSketchVersion = new SketchVersion(majorVersion, minorVersion, apiVersion, arduinoType);
 
 			Helper.ControlInvokeRequired(FlasherVersionTb, () =>
@@ -238,6 +258,7 @@ namespace TapecartFlasher
 					$"Type={SketchVersion.ArduinoTypeToName(arduinoType)}";
 			});
 
+			Debug.WriteLine("GetTapecartInfo");
 			_tapecartInfo = _arduinoComm.GetTapecartInfo();
 			if (_tapecartInfo == null)
 			{
@@ -246,7 +267,7 @@ namespace TapecartFlasher
 				{
 					TapecartVersionTb.Text = "Error reading Tapecart info";
 				});
-				return false;
+				return true;
 			}
 
 			Helper.ControlInvokeRequired(TapecartVersionTb, () =>
@@ -276,9 +297,10 @@ namespace TapecartFlasher
 
 		private void TestBtn_Click(object sender, EventArgs e)
 		{
-			ReadWriteTest();
+			//ReadWriteTest();
 		}
 
+#if false
 		/// <summary>
 		/// Debugging/Flash-Test
 		/// </summary>
@@ -321,6 +343,7 @@ namespace TapecartFlasher
 				cnt++;
 			}
 		}
+#endif
 
 		private async void WriteTcrtBtn_Click(object sender, EventArgs e)
 		{
@@ -532,27 +555,27 @@ namespace TapecartFlasher
 
 			// select tcrt file to write
 
-			SaveFileDialog openFileDialog = new SaveFileDialog();
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			try {
-				openFileDialog.Filter = "TCRT files|*.tcrt";
-				openFileDialog.Title = "Select a TCRT file";
+				saveFileDialog.Filter = "TCRT files|*.tcrt";
+				saveFileDialog.Title = "Select a TCRT file";
 
-				if (openFileDialog.ShowDialog() != DialogResult.OK)
+				if (saveFileDialog.ShowDialog() != DialogResult.OK)
 					return;
 
 				// test if we can write this file
-				File.WriteAllBytes(openFileDialog.FileName, tcrtImage);
-				File.Delete(openFileDialog.FileName);
+				File.WriteAllBytes(saveFileDialog.FileName, tcrtImage);
+				File.Delete(saveFileDialog.FileName);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				_logging.Warn(MODUL_NAME, "ReadTcrtBtn_Click", $"Error opening tcrt file for write '{Path.GetFileName(openFileDialog.FileName)}'");
+				_logging.Warn(MODUL_NAME, "ReadTcrtBtn_Click", $"Error opening tcrt file for write '{Path.GetFileName(saveFileDialog.FileName)}'");
 				TcrtInfoTb.Text = $"Error opening TCRT file for write";
 				return;
 			}
 
-			TcrtFilenameTb.Text = openFileDialog.FileName;
-			string logFilename = Path.GetFileName(openFileDialog.FileName);
+			TcrtFilenameTb.Text = saveFileDialog.FileName;
+			string logFilename = Path.GetFileName(saveFileDialog.FileName);
 
 			_logging.Info(MODUL_NAME, "ReadTcrtBtn_Click", $"Read file, Filename='{logFilename}' {_arduinoComm.CurrentParameter}");
 
@@ -695,7 +718,7 @@ namespace TapecartFlasher
 			{
 				// write tcrt file, should write without error because we tested it before
 				try {
-					File.WriteAllBytes(openFileDialog.FileName, tcrtImage);
+					File.WriteAllBytes(saveFileDialog.FileName, tcrtImage);
 				}
 				catch (Exception ex) {
 					_logging.Warn(MODUL_NAME, "ReadTcrtBtn_Click", $"Error writing tcrt file '{logFilename}'");
@@ -749,7 +772,7 @@ namespace TapecartFlasher
 
 		private void MainView_ResizeEnd(object sender, EventArgs e)
 		{
-			Debug.WriteLine($"{Width} / {Height}");
+			//Debug.WriteLine($"{Width} / {Height}");
 		}
 
 		private void UpdateReadWriteStatus(string text, Color? color = null)

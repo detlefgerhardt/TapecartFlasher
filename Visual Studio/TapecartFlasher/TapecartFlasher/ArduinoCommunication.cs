@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Management;
 using System.IO.Ports;
 using System.Diagnostics;
 using System.Threading;
@@ -16,6 +14,7 @@ namespace TapecartFlasher
 
 		private Logging _logging = Logging.Instance;
 
+		//public const int DEFAULT_BAUDRATE = 230000;
 		public const int DEFAULT_BAUDRATE = 115000;
 		//public const int BAUDRATE = 57600;
 
@@ -99,8 +98,9 @@ namespace TapecartFlasher
 			try
 			{
 				_serialPort = new SerialPort(comPortName, baudrate);
+				//_serialPort.Handshake = Handshake.RequestToSend;
+				//_serialPort.DtrEnable = true;   // reset arduino
 				_serialPort.ReadTimeout = CurrentTimeout;
-				//_serialPort.WriteTimeout = _timeout;
 				_serialPort.Open();
 				if (reset)
 				{
@@ -133,7 +133,10 @@ namespace TapecartFlasher
 				return false;
 
 			byte[] recvData;
+			_serialPort.ReadTimeout = 15000; // 15 seconds
 			int result = SendCmd(CmdGroups.CMDGROUP_ARDUINO, (byte)ArduinoCmds.ARDUINOCMD_VERSION, null, 4, out recvData);
+			_serialPort.ReadTimeout = CurrentTimeout;
+
 			if (result != 0)
 				return false;
 
@@ -374,26 +377,35 @@ namespace TapecartFlasher
 		/// <returns></returns>
 		private int SendCmd(CmdGroups sendGroup, int sendCmd, byte[] sendData, int? recvLen, out byte[] recvData)
 		{
-			_serialPort.DiscardInBuffer();
-			byte[] data = CreateCmd(sendGroup, sendCmd, sendData);
-
-			if (data.Length <= 32)
+			recvData = null;
+			try
 			{
-				data = CreateCmd(sendGroup, sendCmd, sendData);
-				_serialPort.Write(data, 0, data.Length);
-			}
-			else
-			{
-				// if data>32 byte we use a special SendBlock routine to send the data part
-				data = CreateCmd(sendGroup, sendCmd, sendData);
-				_serialPort.Write(data, 0, 5); // header
-				SendBlock(data, 5, data.Length - 6); // data
-				_serialPort.Write(data, data.Length - 1, 1); // checksum
-			}
+				_serialPort.DiscardInBuffer();
+				byte[] data = CreateCmd(sendGroup, sendCmd, sendData);
 
-			int status = RecvResult(sendGroup, sendCmd, recvLen, out recvData);
-			string str = _serialPort.ReadExisting();
-			return status;
+				if (data.Length <= 32)
+				{
+					data = CreateCmd(sendGroup, sendCmd, sendData);
+					_serialPort.Write(data, 0, data.Length);
+				}
+				else
+				{
+					// if data>32 byte we use a special SendBlock routine to send the data part
+					data = CreateCmd(sendGroup, sendCmd, sendData);
+					_serialPort.Write(data, 0, 5); // header
+					SendBlock(data, 5, data.Length - 6); // data
+					_serialPort.Write(data, data.Length - 1, 1); // checksum
+				}
+
+				int status = RecvResult(sendGroup, sendCmd, recvLen, out recvData);
+				string str = _serialPort.ReadExisting();
+				return status;
+			}
+			catch(Exception ex)
+			{
+				_logging.Error(MODUL_NAME, "SendCmd", $"Error sending command, sendCmd={sendCmd}");
+				return 0;
+			}
 		}
 
 		private byte[] CreateCmd(CmdGroups sendGroup, int sendCmd, byte[] data = null)
@@ -593,7 +605,7 @@ namespace TapecartFlasher
 
 			return list.OrderBy(o => o.ComNumber).ToList();
 
-			// this sophisticated COM port detection needs a higher DOTNET versions
+			// this more sophisticated COM port detection needs a higher DOTNET version
 #if false
 			List<ComPortSelectionItem> list = new List<ComPortSelectionItem>();
 			//ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_SerialPort");
@@ -749,6 +761,11 @@ namespace TapecartFlasher
 			ComNumber = comNumber;
 			ComPort = comPort;
 			Description = comPort;
+		}
+
+		public override string ToString()
+		{
+			return $"{ComNumber} {ComPort}";
 		}
 	}
 }

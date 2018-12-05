@@ -1,20 +1,17 @@
 //-------------------------------------------------------------------------------------------------
-// Crc.h   *dg*    11.09.2018
+// Helper.h   *dg*    11.09.2018
 //-------------------------------------------------------------------------------------------------
 
-#ifndef Crc_h
-#define Crc_h 
+#ifndef Helper_h
+#define Helper_h 
 
 //-------------------------------------------------------------------------------------------------
 
-class Crc
+class Helper
 {
   public:
-    static uint32_t Crc::crc_init();
-    static uint32_t Crc::crc_finalize(uint32_t crc);
-    static uint32_t Crc::crc_reflect(uint32_t data, size_t data_len);
-    static uint32_t Crc::crc_update(uint32_t crc, const uint8_t *data, size_t data_len);
-    static uint32_t Crc::crc_buffer(uint8_t *buffer, int len);
+   static bool inputConsole(char *buffer, byte len);
+   static void dumpBuffer(const uint8_t *buffer, int len);
 
   private:
 };

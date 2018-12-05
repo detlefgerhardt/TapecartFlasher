@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------
-// CmdMode.h   *dg*    13.07.2018
+// CmdMode.h   *dg*    11.09.2018
 //-------------------------------------------------------------------------------------------------
 
 #ifndef CmdMode_h
@@ -70,9 +70,10 @@ class CmdMode
     uint16_t page_size; // in bytes
     uint16_t erase_pages; // in pages
     uint16_t erase_size; // in bytes
+    bool cmd_mode_active;
     
-    static uint32_t crc_buffer(uint8_t buffer, int len);
-    static void dump_buffer(uint8_t *buffer, int len);
+    //static uint32_t crc_buffer(uint8_t buffer, int len);
+    //static void dump_buffer(uint8_t *buffer, int len);
 
   private:
     void send_u24(uint32_t value);
@@ -81,7 +82,6 @@ class CmdMode
     uint32_t get_u24(void);
     uint16_t get_u16(void);
     uint8_t getbyte(void);
-   
 };
 
 //-------------------------------------------------------------------------------------------------

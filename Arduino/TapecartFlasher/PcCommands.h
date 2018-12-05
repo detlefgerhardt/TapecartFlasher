@@ -1,9 +1,9 @@
 //-------------------------------------------------------------------------------------------------
-// PcCommands.h   *dg*    13.07.2018
+// PcCommands.h   *dg*    11.09.2018
 //-------------------------------------------------------------------------------------------------
 
 #ifndef PcCommands_h
-#define PcCommands_h 
+#define PcCommands_h
 
 //-------------------------------------------------------------------------------------------------
 
@@ -28,10 +28,8 @@ typedef enum
   RESULT_ERROR = 0x01,
   RESULT_NOT_IMPLEMENTED = 0x02,
   RESULT_CHKSUM_ERROR = 0x03,
+  RESULT_TAPECART_ERROR = 0x04
 };
-
-#define CMD_PREFIX 0x01 // SOH
-#define CMD_ENQ 0x05 // ENQ
 
 //-------------------------------------------------------------------------------------------------
 
@@ -39,7 +37,8 @@ class PcCommands
 {
   public:
     PcCommands();
-    bool readCmd(void);
+    bool readCmd();
+    uint8_t static recv_byte();
 
   private:
     void arduinoCommand(uint8_t cmd, uint16_t cmdLen);
@@ -65,7 +64,6 @@ class PcCommands
     uint16_t recv_u16();
     uint32_t recv_u24();
     uint32_t recv_u32();
-    uint8_t recv_byte();
     void send_u16(uint16_t value);
     void send_u24(uint32_t value);
     void send_byte(uint8_t value);

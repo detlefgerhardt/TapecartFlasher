@@ -1,6 +1,12 @@
 //-------------------------------------------------------------------------------------------------
-// PcCommands.cpp   *dg*    19.07.2018
+// PcCommands.cpp   *dg*    11.10.2018
 //-------------------------------------------------------------------------------------------------
+//
+// Arduino USB/Serial API format:
+// command: 0x01 <cmdgroup:8> <cmd:8> <datalen:16> <data 0 ... data n> <chksum:8> (binary format)
+// result: 0x01 <cmdgroup:8> <cmd:8> <status:8> <datalen:16> <data 0 ... data n> <chksum:8>
+// 1-byte checksum is simple XOR
+// a result starting with a "*" is a debug message terminated by 0x10 (new line)
 
 #include "TapecartFlasher.h"
 #include "Tcrt.h"
@@ -22,13 +28,6 @@ PcCommands::PcCommands()
 
 bool PcCommands::readCmd()
 {
-  if (Serial.available() < 5)
-    return;
-    
-  byte data = recv_byte();
-  if (data != CMD_PREFIX)
-    return;
-
   uint8_t calcChksum = 0;
 
   byte cmdGroup = recv_byte();
@@ -44,7 +43,7 @@ bool PcCommands::readCmd()
 
   if (cmdLen>DATABUFFER_MAX + DATABUFFER_HEADER)
     return false; // length error
-    
+
   uint16_t len;
   if (cmdLen<32)
   {
@@ -62,14 +61,6 @@ bool PcCommands::readCmd()
   uint8_t chksum = recv_byte();
   if (chksum != calcChksum)
   {
-    /*
-    Serial.print(F("*chksum error "));
-    Serial.print(chksum, HEX);
-    Serial.print(" ");
-    Serial.print(calcChksum, HEX);
-    Serial.print(" ");
-    Serial.println(databuffer[cmdLen-1], HEX);
-    */
     sendResponse(cmdGroup, cmd, RESULT_CHKSUM_ERROR, 0);
     return false; // checksum error
   }
@@ -82,8 +73,6 @@ bool PcCommands::readCmd()
     case CMDGROUP_TAPECART:
       tapecartCommand(cmd, cmdLen);
   }
-
-  //fastDigitalWrite(PIN_LED, false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -92,7 +81,7 @@ void PcCommands::arduinoCommand(uint8_t cmd, uint16_t cmdLen)
 {
   uint8_t result = RESULT_NOT_IMPLEMENTED;
   uint16_t resultLen = 0;
-  
+
   switch(cmd)
   {
     case ARDUINOCMD_VERSION:
@@ -128,7 +117,7 @@ uint8_t PcCommands::arduinoCmd_StartCmdMode()
   if (tc_cmd.start())
     return RESULT_OK;
 
-  Serial.println(F("*error starting tapecart"));
+  Serial.println(F("*error starting tapecart command mode"));
   return RESULT_ERROR;
 }
 
@@ -144,7 +133,7 @@ void PcCommands::SdDir()
     if (!entry)
       return;
     Serial.print(entry.name());
-    Serial.print(" ");
+    Serial.print(' ');
     Serial.println(entry.size());
     entry.close();
   };
@@ -158,6 +147,12 @@ void PcCommands::tapecartCommand(uint8_t cmd, uint16_t cmdLen)
 {
   uint8_t result = RESULT_NOT_IMPLEMENTED;
   uint16_t resultLen = 0;
+  
+  if (!tc_cmd.cmd_mode_active)
+  {
+    sendResponse(CMDGROUP_TAPECART, cmd, RESULT_TAPECART_ERROR, 0);
+    return;
+  }
 
   switch(cmd)
   {
@@ -220,7 +215,7 @@ void PcCommands::tapecartCommand(uint8_t cmd, uint16_t cmdLen)
 
   if (result==RESULT_NOT_IMPLEMENTED)
   {
-    Serial.print("*not implemented ");
+    Serial.print(F("*not implemented "));
     Serial.println(cmd, HEX);
   }
 

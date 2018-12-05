@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------
-// CmdMode.cpp   *dg*    13.07.2018
+// CmdMode.cpp   *dg*    20.10.2018
 //-------------------------------------------------------------------------------------------------
 
 #include "TapecartFlasher.h"
@@ -11,18 +11,27 @@
 
 CmdMode::CmdMode()
 {
+  cmd_mode_active = false;
 }
 
 //--------------------------------------------------------------------------
 
 bool CmdMode::start()
 {
+  //Serial.println(F("*CmdMode::start"));
   if (!set_cmdmode())
+  {
+    cmd_mode_active = false;
+    //Serial.println(F("*cmd_mode_active=false"));
     return false;
+  }
+  
+  //Serial.println(F("*cmd_mode_active=true"));
 
   read_sizes(&total_size, &page_size, &erase_pages);
   erase_size = page_size * erase_pages;
 
+  cmd_mode_active = true;
   return true;
 }
 
@@ -32,19 +41,19 @@ bool CmdMode::set_cmdmode()
 {
   uint8_t i;
   long timeout;
-  
-  /* ensure the cart is in stream mode */
+
+  // ensure the cart is in stream mode
   fastDigitalWrite(PIN_WRITE, LOW);
   fastDigitalWrite(PIN_MOTOR, HIGH);
   delay(1);
 
-  /* wait until sense is low */
+  // wait until sense is low
   timeout = millis();
   while(fastDigitalRead(PIN_SENSE))
   {
     if (millis()-timeout>10)
     {
-      Serial.println(F("*sense timeout 1"));
+      //Serial.println(F("*sense timeout 1"));
       return false;
     }
   }
@@ -71,19 +80,20 @@ bool CmdMode::set_cmdmode()
   delay(1);
   fastDigitalWrite(PIN_WRITE, HIGH);
 
-  /* wait until sense is high */
+  // wait until sense is high
   timeout = millis();
   while(!fastDigitalRead(PIN_SENSE))
   {
     if (millis()-timeout>50)
     {
-      Serial.println(F("*sense timeout 2"));
+      //Serial.println(F("*sense timeout 2"));
       return false;
     }
   }
 
-  /* wait for 100 pulses on read (0.384 ms periode) */
+  // wait for 100 pulses on read (0.384 ms periode)
   delay(1);
+  byte cnt = 0;
   for (i = 0; i < 100; ++i)
   {
     timeout = millis();
@@ -91,10 +101,13 @@ bool CmdMode::set_cmdmode()
     {
       if (millis()-timeout>100)
       {
+        /*
         Serial.print("*read timeout HIGH ");
         Serial.print(i);
         Serial.print(" ");
         Serial.println(millis()-timeout);
+        */
+        cnt = 0;
         break;
       }
     }
@@ -104,16 +117,21 @@ bool CmdMode::set_cmdmode()
     {
       if (millis()-timeout>100)
       {
+        /*
         Serial.print(F("*read timeout LOW "));
         Serial.print(i);
         Serial.print(" ");
         Serial.println(millis()-timeout);
+        */
+        cnt = 0;
         break;
       }
     }
+    cnt++;
   }
+
   fastDigitalWrite(PIN_WRITE, LOW);
-  return true;
+  return cnt>10;
 } 
 
 //--------------------------------------------------------------------------
@@ -261,7 +279,7 @@ void CmdMode::led_off()
 void CmdMode::led_on()
 {
   sendbyte(CMD_LED_ON);
-} 
+}
 
 //--------------------------------------------------------------------------
 
@@ -321,8 +339,8 @@ uint16_t CmdMode::get_u16(void)
 }
 
 //--------------------------------------------------------------------------
+// assumed initial state: write low
 
-/* assumed initial state: write low */
 void CmdMode::sendbyte(uint8_t data)
 {
   uint8_t i;
@@ -348,12 +366,12 @@ void CmdMode::sendbyte(uint8_t data)
     delayMicroseconds(3);
   }
 
-  /* ensure known level on sense */
+  // ensure known level on sense
   fastDigitalWrite(PIN_SENSE, HIGH);
   delayMicroseconds(2);
 
-  /* switch sense to input */
-  /* (tapecart sets sense to output 10us after high->low edge) */
+  // switch sense to input
+  // (tapecart sets sense to output 10us after high->low edge)
   fastDigitalWrite(PIN_SENSE, LOW);
   pinMode(PIN_SENSE, INPUT);
   delayMicroseconds(10);
@@ -362,8 +380,8 @@ void CmdMode::sendbyte(uint8_t data)
 }
 
 //--------------------------------------------------------------------------
+// assumed initial state: write output low, sense input
 
-/* assumed initial state: write output low, sense input */
 uint8_t CmdMode::getbyte(void)
 {
   noInterrupts();
@@ -397,29 +415,6 @@ uint8_t CmdMode::getbyte(void)
 
   return data;
 }
-
-//--------------------------------------------------------------------------
-
-void CmdMode::dump_buffer(uint8_t *buffer, int len)
-{
-  int p = 0;
-  char s[80];
-
-  while(p<len)
-  {
-    sprintf(s, FCSTR("*%04x "), p);
-    Serial.print(s);
-    for (int j=0; j<16; j++)
-    {
-      sprintf(s, FCSTR("%02x "), buffer[p]);
-      Serial.print(s);
-      p++;
-      if (p>len)
-        break;
-    }
-    Serial.println();
-  }
-} 
 
 //-------------------------------------------------------------------------------------------------
 // CmdMode.cpp

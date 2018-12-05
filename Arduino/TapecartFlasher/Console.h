@@ -1,22 +1,29 @@
 //-------------------------------------------------------------------------------------------------
-// Crc.h   *dg*    11.09.2018
+// Console.h   *dg*    11.09.2018
 //-------------------------------------------------------------------------------------------------
 
-#ifndef Crc_h
-#define Crc_h 
+#ifndef Console_h
+#define Console_h 
+
+#define CMD_CON 0x0D // carriage return
 
 //-------------------------------------------------------------------------------------------------
 
-class Crc
+class Console
 {
   public:
-    static uint32_t Crc::crc_init();
-    static uint32_t Crc::crc_finalize(uint32_t crc);
-    static uint32_t Crc::crc_reflect(uint32_t data, size_t data_len);
-    static uint32_t Crc::crc_update(uint32_t crc, const uint8_t *data, size_t data_len);
-    static uint32_t Crc::crc_buffer(uint8_t *buffer, int len);
+    Console();
+    byte start();
+    void static arduinoVersion();
 
   private:
+    void showMenu();
+    bool readMenu(char *buffer);
+    bool readFilename(char *buffer);
+    void deviceInit();
+    void sdDir();
+    bool checkTapecart();
+    bool checkSdCard();
 };
 
 //-------------------------------------------------------------------------------------------------

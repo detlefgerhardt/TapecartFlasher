@@ -1,4 +1,4 @@
-﻿Tapecart Flasher version history
+﻿Tapecart Flasher Version History
 
 Version  Date        Comment
 0.0.1.0  20-07-2018  First release
@@ -7,8 +7,13 @@ Version  Date        Comment
 
 0.0.1.1  27-07-2018  FIX: Reading produced corrupt TCRT files
                      FIX: update loader only if different
-                     NEW: Added icon
+                     NEW: Added application icon
                      NEW: Added Tapecart Browser info
                      NEW: Added crc32 check after read
                      NEW: Added Dotnet version check (DOTNET 4.5)
                      NEW: Improved logging
+
+0.0.1.4  20-10-2018  NEW: Support for Arduino ProMicro/Arduino
+                     FIX: Timeout when connecting to Arduino with out a Tapecart module
+
+0.0.1.5  22-10-2018  FIX: Connect/Disconnect problems

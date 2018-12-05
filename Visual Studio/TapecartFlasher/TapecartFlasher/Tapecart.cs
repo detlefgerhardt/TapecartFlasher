@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Linq;
-using System.Text;
-
-namespace TapecartFlasher
+﻿namespace TapecartFlasher
 {
 	static class Tapecart
 	{

@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ArduinoUploader;
 using ArduinoUploader.Hardware;
 
-namespace TapecartFlasher {
+namespace TapecartFlasher
+{
 
 	partial class UpdateView : Form {
 
@@ -43,12 +37,12 @@ namespace TapecartFlasher {
 			MessageLbl.Text = "";
 
 			if ( oldVersion != null )
-				OldVersion.Text = $"{oldVersion.TypeStr} Tapecart Flasher v{oldVersion.VerStr}";
+				OldVersion.Text = $"{oldVersion.DisplayName} Tapecart Flasher v{oldVersion.VerStr}";
 			else
 				OldVersion.Text = "---";
 
 			if ( _latestVersion != null )
-				NewVersion.Text = $"{_latestVersion.TypeStr} Tapecart Flasher v{_latestVersion.VerStr}";
+				NewVersion.Text = $"{_latestVersion.DisplayName} Tapecart Flasher v{_latestVersion.VerStr}";
 			else {
 				NewVersion.Text = "---";
 				_latestVersion = _sketchList.GetLatestVersion(oldVersion, true);
@@ -63,7 +57,7 @@ namespace TapecartFlasher {
 				BoardTypeCb.Items.Add(f);
 
 			BoardTypeCb.SelectedItem = _latestVersion;
-			BoardTypeCb.DisplayMember = "TypeStr";
+			BoardTypeCb.DisplayMember = "DisplayName";
 			if ( oldVersion != null )
 				BoardTypeCb.Enabled = false;
 
@@ -78,7 +72,7 @@ namespace TapecartFlasher {
 
 		private void BoardTypeCb_SelectedIndexChanged(object sender, EventArgs e) {
 			_latestVersion = (SketchVersion)BoardTypeCb.SelectedItem;
-			NewVersion.Text = $"{_latestVersion.TypeStr} Tapecart Flasher v{_latestVersion.VerStr}";
+			NewVersion.Text = $"{_latestVersion.DisplayName} Tapecart Flasher v{_latestVersion.VerStr}";
 		}
 
 		private void UpdateBtn_Click(object sender, EventArgs e) {
@@ -91,7 +85,7 @@ namespace TapecartFlasher {
 		{
 			ArduinoProgress progress = new ArduinoProgress(UpdateProgress);
 
-			ArduinoModel? model = ArduinoTypeToModel(_latestVersion.Type);
+			ArduinoModel? model = SketchVersion.ArduinoTypeToModel(_latestVersion.Type);
 			if ( model == null ) {
 				_logging.Error(MODUL_NAME, "UploadSketch", $"invalid arduino type {_latestVersion.Type}");
 				return;
@@ -165,20 +159,6 @@ namespace TapecartFlasher {
 			Close();
 		}
 
-		private ArduinoModel? ArduinoTypeToModel(SketchVersion.ArduinoType arduinoType) {
-			switch ( arduinoType ) {
-				case SketchVersion.ArduinoType.ARDUINO_UNO:
-					return ArduinoModel.UnoR3;
-				case SketchVersion.ArduinoType.ARDUINO_NANO:
-					return ArduinoModel.NanoR3;
-				case SketchVersion.ArduinoType.ARDUINO_MEGA2560:
-					return ArduinoModel.Mega2560;
-#warning TODO prüfen, welches ArduinoModel dem Mini entspricht
-				//case SketchVersion.ArduinoType.ARDUINO_PRO_MINI:
-				//	return ArduinoModel.ProMini;
-			}
-			return null;
-		}
 	}
 
 	public class ArduinoProgress : IProgress<double>
