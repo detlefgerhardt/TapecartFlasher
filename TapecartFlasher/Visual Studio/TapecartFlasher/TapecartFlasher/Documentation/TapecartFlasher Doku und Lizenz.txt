@@ -1,0 +1,129 @@
+﻿Kurzanleitung für TapecartFlasher von Detlef Gerhardt
+Copyright, Lizenz und Haftungsbeschränkung am Ende.
+
+Der TapecartFlasher ist ein Windows-Tool zum Programmieren oder
+Auslesen von C64 Tapecart-Modulen direkt vom PC über einen Arduino
+UNO, NANO, Mega2560 oder Pro Mini.
+
+Bei der ersten Verwendung des Arduino kann die Arduino-Software
+vom TapecartFlasher an den Ardunio übertragen werden.
+Bei jeder Verbinungsaufnahme (Connect) mit dem Arduino wirdgeprüft, ob
+die Arduino-Software aktuell ist.
+Die Arduino Entwicklungsumgebung wird dafür nicht benötigt.
+Die Hex-Files für das verwendete Arduino-Board müssen sich im
+gleichen Verzeichnis wie TapecartFlasher.exe befinden.
+
+Ablauf für das Programmieren eines TCRT-Files:
+
+1. Verbinde das Tapecart-Modul über einen Adapter mit dem Arduino.
+
+Anschlussbelegung:
+
+  Arduino ! Tapecart
+  ------------------
+  GND     ! GND
+  +5V     ! +5V
+  Pin D2  ! MOTOR
+  Pin D3  ! READ
+  Pin D4  ! WRITE
+  Pin D5  ! SENSE
+
+2. Verbinde den Arduino über USB mit dem PC
+
+3. Bitte prüfe, dass der Arduino ordentlich von Windows erkannt
+wurde und als COM-Port im Geräte-Manager erscheint.
+Möglicherweise müssen noch die zum Arduino passenden USB-Treiber
+installiert werden.
+
+4. Starte TapecartFlasher
+
+5. Klicke auf "Detect". Wenn der Arduino bereits eine TapecartFlasher-
+Software enthält, müsste der COM-Port gefunden und angezeigt werden.
+
+6. Wenn der Arduino noch keine TapecartFlasher-Software enthält,
+wähle den richtigen COM-Port aus, klicke auf "Upload/Update Sketch",
+wähle das passende Arduino-Board und klicke auf Update.
+Die Software wird nun zum Arduino übertragen.
+Das Update-Fenster schliessen und nochmals "Detect" klicken.
+Der richtige COM-Port sollte jetzt angezeigt werden.
+
+7. Klicke auf "Connect". Nach wenigen Sekunden sollten einige
+Informationen zum angeschlossenen Tapecart-Modul angezeigt werden.
+
+8. Mit dem "Write" oder "Read" Button kann jetzt ein TCRT File 
+geschrieben oder gelesen werden.
+
+Bei Problemen bitte Info an feedback@dgerhardt.de oder im
+Forum64 an User "detlef".
+
+Viel Spaß.
+
+--------------------------------------------------------------------------
+
+Terminal Console 
+
+Um den TapecartFlasher auch ohne Windows Frontend betreiben zu können,
+besitzt die Arduino-Software einen Konsolenmodus.
+Dazu muss auf man sich mit einem Terminalprogramm mit dem Arduino
+verbinden (11500 Kbyte) und einmal ENTER drücken.
+Dann sollte sich das Konsolenmenü melden. 
+
+Für das Lesen und Schreiben von TCRT Files über die Konsole muss eine
+SD-Karte am Arduino angeschlossen sein. Eine direkte Übertragung
+von Files wird nicht unterstützt.
+Nach dem Wechseln des Tapecart-Modules muss das Modul mit (I)nit neu
+initialisiert werden.
+
+--------------------------------------------------------------------------
+
+Die seriellen API
+
+Das Windows-Frontend kommuniziert mit dem Arduino über eine serielle API.
+
+Command: 0x01 <cmdgroup:8> <cmd:8> <datalen:16> <data 0 ... data n> <chksum:8> (binary format)
+Result: 0x01 <cmdgroup:8> <cmd:8> <status:8> <datalen:16> <data 0 ... data n> <chksum:8>
+Die 1-byte Checksum wird durch ein simples XOR über alle Bytes gebildet.
+
+Die Übertragung von Files erfolgt in 100 Byte Blöcken, die vom Empfänger
+(PC oder Arduino) mit 0x05 bestätigt werden.
+
+Weitere Details und die Liste der Kommandos bitte dem Quelltext entnehmen.
+
+--------------------------------------------------------------------------
+
+Copyright / Lizenz-Bedingungen / Haftungsausschluss
+
+Copyright (c) 2018 Detlef Gerhardt
+
+Die Software TapecartFlasher unterliegt der MIT-Lizenz.
+
+Hiermit wird unentgeltlich jeder Person, die eine Kopie der Software 
+und der zugehörigen Dokumentationen (die "Software") erhält, die Erlaubnis 
+erteilt, sie uneingeschränkt zu nutzen, inklusive und ohne Ausnahme mit dem 
+Recht, sie zu verwenden, zu kopieren, zu verändern, zusammenzufügen, zu 
+veröffentlichen, zu verbreiten, zu unterlizenzieren und/oder zu verkaufen, 
+und Personen, denen diese Software überlassen wird, diese Rechte zu verschaffen, 
+unter den folgenden Bedingungen:
+
+Der obige Urheberrechtsvermerk und dieser Erlaubnisvermerk sind in allen Kopien oder 
+Teilkopien der Software beizulegen.
+
+DIE SOFTWARE WIRD OHNE JEDE AUSDRÜCKLICHE ODER IMPLIZIERTE GARANTIE BEREITGESTELLT, 
+EINSCHLIEẞLICH DER GARANTIE ZUR BENUTZUNG FÜR DEN VORGESEHENEN ODER EINEM BESTIMMTEN 
+ZWECK SOWIE JEGLICHER RECHTSVERLETZUNG, JEDOCH NICHT DARAUF BESCHRÄNKT. IN KEINEM FALL 
+SIND DIE AUTOREN ODER COPYRIGHTINHABER FÜR JEGLICHEN SCHADEN ODER SONSTIGE ANSPRÜCHE 
+HAFTBAR ZU MACHEN, OB INFOLGE DER ERFÜLLUNG EINES VERTRAGES, EINES DELIKTES ODER 
+ANDERS IM ZUSAMMENHANG MIT DER SOFTWARE ODER SONSTIGER VERWENDUNG DER SOFTWARE 
+ENTSTANDEN. 
+
+--------------------------------------------------------------------------
+
+Credits
+
+Diese Software verwendet die ArduinoSketchUploader Library von Christophe Diericx.
+https://github.com/christophediericx
+
+Kim Jørgensen hat ein Frontend für Linux programmiert
+https://github.com/KimJorgensen/tapecart_flasher
+
+--------------------------------------------------------------------------
