@@ -60,7 +60,8 @@ Tapecart module.
 The Arduino software now includes a terminal console that allows you to control
 the flasher with any operating system capable of connecting to the Arduino via USB.
 In your favorite terminal prorgamm select the USB COM port of the Arduino, set the
-baud rate to 115000 and press Enter. The TapecardFlasher menu should appear.
+baud rate to 115000, switch of local echo and and press Enter.
+The TapecardFlasher menu should appear.
 
 ```
 Arduino TapecartFlasher V0.5/2
@@ -68,9 +69,9 @@ Arduino TapecartFlasher V0.5/2
 (I)nit,(F)iles,(W)rite,(R)ead,(V)ersion:
 ```
 
-In the moment it is not possible to transfer Tapecart images directly from or to the
-PC via the console. But it is  possible to transfer images from an sd card that is
-connected to the Arduino.
+In the moment it is not possible to transfer TCRT files directly from or to the
+PC via the console. But it is  possible to transfer TCRT file from an sd card that
+is connected to the Arduino.
 
 Connecting the SD card module to the Arduino (UNO as example):
 ```
@@ -100,3 +101,4 @@ This software uses the [ArduinoSketchUploader Library](https://github.com/christ
 
 Kim Jørgensen created a [Frontend for Linux](https://github.com/KimJorgensen/tapecart_flasher).
 
+[TapecartFlasher Nano] https://www.hackup.net/2018/09/tapecartflasher-nano/.
