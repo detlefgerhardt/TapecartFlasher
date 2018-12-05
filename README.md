@@ -16,7 +16,7 @@ The Arduino development environment is not needed for this.
 The hex files for your Arduino board must exist in same directory
 as the TapecartFlasher.exe file.
 
-## Procedure for writing or reading a TCRT file: #
+## Procedure for writing or reading a TCRT file #
 
 1. Connect the Tapecart module to the Arduino via an adapter.
 
@@ -55,17 +55,24 @@ Tapecart module will be displayed.
 8. With the "Write" or "Read" button a TCRT file can be transfered to or from the
 Tapecart module.
 
-## New terminal console: #
+## New terminal console #
 
 The Arduino software now includes a terminal console that allows you to control
 the flasher with any operating system capable of connecting to the Arduino via USB.
 In your favorite terminal prorgamm select the USB COM port of the Arduino, set the
 baud rate to 115000 and press Enter. The TapecardFlasher menu should appear.
-In the moment it is not possible to transfer Tapecart images directly from or to the
-PC via the console. It is only possible to transfer images from an sd card connected
-to the Arduino.
 
-Connecting the SD card module to the Arduino (UNO):
+```
+Arduino TapecartFlasher V0.5/2
+
+(I)nit,(F)iles,(W)rite,(R)ead,(V)ersion:
+```
+
+In the moment it is not possible to transfer Tapecart images directly from or to the
+PC via the console. But it is  possible to transfer images from an sd card that is
+connected to the Arduino.
+
+Connecting the SD card module to the Arduino (UNO as example):
 ```
 Arduino ! SD card
 (UNO)   !
@@ -78,7 +85,7 @@ Pin 13  ! SCK
 Pin 4   ! CS/SS
 ```
 
-
+## Feedback #
 
 In case of problems please contact feedback@dgerhardt.de or user detlef at 
 forum64.de.
