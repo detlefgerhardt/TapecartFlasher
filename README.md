@@ -86,7 +86,7 @@ Pin 12  ! MISO
 Pin 13  ! SCK
 ```
 
-Please note that some SD card shields have the CS pin hardware wired to Pin 4. This
+Please note that some SD card shields have the CS pin hard wired to Pin 4. This
 will not work.
 
 
