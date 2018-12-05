@@ -105,4 +105,4 @@ This software uses the [ArduinoSketchUploader Library](https://github.com/christ
 
 Kim Jørgensen created a [Frontend for Linux](https://github.com/KimJorgensen/tapecart_flasher).
 
-[TapecartFlasher Nano] https://www.hackup.net/2018/09/tapecartflasher-nano/.
+[TapecartFlasher Nano] (https://www.hackup.net/2018/09/tapecartflasher-nano/).
