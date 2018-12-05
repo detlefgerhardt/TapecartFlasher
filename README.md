@@ -70,7 +70,7 @@ Arduino TapecartFlasher V0.5/2
 ```
 
 In the moment it is not possible to transfer TCRT files directly from or to the
-PC via the console. But it is  possible to transfer TCRT file from an sd card that
+PC via the console. But it is  possible to transfer TCRT file from an SD card that
 is connected to the Arduino.
 
 Connecting the SD card module to the Arduino (UNO as example):
@@ -80,11 +80,15 @@ Arduino ! SD card
 ------------------
 GND     ! GND
 +5V     ! + 5V
+Pin 10  ! CS/SS
 Pin 11  ! MOSI
 Pin 12  ! MISO
 Pin 13  ! SCK
-Pin 4   ! CS/SS
 ```
+
+Please note that some SD card shields have the CS pin hardware wired to Pin 4. This
+will not work.
+
 
 ## Feedback #
 
