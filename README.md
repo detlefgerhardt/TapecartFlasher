@@ -60,7 +60,7 @@ Tapecart module.
 The Arduino software now includes a terminal console that allows you to control
 the flasher with any operating system capable of connecting to the Arduino via USB.
 In your favorite terminal prorgamm select the USB COM port of the Arduino, set the
-baud rate to 115000, switch of local echo and and press Enter.
+baud rate to 115000 (8N1), switch of local echo and and press Enter.
 The TapecardFlasher menu should appear.
 
 ```
